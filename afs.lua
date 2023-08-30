@@ -158,10 +158,10 @@ function _N:create(path)
     path, name = path:match '^(.-)/([^/]+)$'
     local err, res = pcall(DocumentsContract.createDocument, resolver, makeFileUri(path), type, name)
     local node
-    if err then
-        node = res.getPath():match('document/primary:Android/data/(.+)')
+    if err and res then
+        node = _M.open(res.getPath():match('document/primary:Android/data/(.+)'))
     end
-    return _M.open(node)
+    return node
 end
 
 --- 删除节点
@@ -182,7 +182,7 @@ function _N:rename(path, name)
     path = self.path .. '/' .. path
     local err, res = pcall(DocumentsContract.renameDocument, resolver, makeFileUri(path), name)
     local node
-    if err then
+    if err and res then
         node = res.getPath():match('document/primary:Android/data/(.+)')
     end
     return _M.open(node)
