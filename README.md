@@ -12,6 +12,8 @@
 [![Telegram Group](https://img.shields.io/badge/Telegram_Group-limao__lua-0099FF?logo=telegram)](https://t.me/limao_lua)
 
 ## 更新内容
+- **`2.0.1`**（2023-08-31)
+    + 修复若干Bug
 - **`2.0.0`**（2023-08-30)
     + 适配 `Android 13`
     + 重构项目
