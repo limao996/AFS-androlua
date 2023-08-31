@@ -420,13 +420,13 @@ function _N:writeString(s)
 end
 
 --- 写入字节到文件
----@param b userdata 字节数组
+---@param buffer userdata 字节数组
 ---@return number 写入长度
-function _N:writeBytes(b)
+function _N:writeBytes(buffer)
     self:IO(2)
-    self.foc.position(self.pos)
-    local buff = ByteBuffer.wrap(b)
-    local n = self.foc.write(buff)
+    self.foc.position(self.pos - 1)
+    local buff = ByteBuffer.wrap(buffer)
+    local n = self.foc.write(buff, start, size)
     self.pos = self.pos + n
     return n
 end
