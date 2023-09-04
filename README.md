@@ -12,7 +12,11 @@
 [![Telegram Group](https://img.shields.io/badge/Telegram_Group-limao__lua-0099FF?logo=telegram)](https://t.me/limao_lua)
 
 ## 更新内容
+<<<<<<< HEAD
 - **`2.0.2`**（2023-09-04)
+=======
+- **`2.0.2`**（2023-08-31)
+>>>>>>> cbeb46cc5e30ddea514de8b26a63ad525a6ba527
     + 修复 `writeBytes` 方法的异常
 - **`2.0.1`**（2023-08-31)
     + 修复若干Bug
