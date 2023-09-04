@@ -426,7 +426,7 @@ function _N:writeBytes(buffer)
     self:IO(2)
     self.foc.position(self.pos - 1)
     local buff = ByteBuffer.wrap(buffer)
-    local n = self.foc.write(buff, start, size)
+    local n = self.foc.write(buff)
     self.pos = self.pos + n
     return n
 end
