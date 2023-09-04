@@ -12,11 +12,7 @@
 [![Telegram Group](https://img.shields.io/badge/Telegram_Group-limao__lua-0099FF?logo=telegram)](https://t.me/limao_lua)
 
 ## 更新内容
-<<<<<<< HEAD
 - **`2.0.2`**（2023-09-04)
-=======
-- **`2.0.2`**（2023-08-31)
->>>>>>> cbeb46cc5e30ddea514de8b26a63ad525a6ba527
     + 修复 `writeBytes` 方法的异常
 - **`2.0.1`**（2023-08-31)
     + 修复若干Bug
@@ -72,6 +68,7 @@ local node = dir:open('path/file.ext')
 
 ### 2. 创建子节点
 ```lua
+-- 返回新的节点对象（安卓12可能返回nil）
 -- 创建文件夹节点
 local test = dir:create('test/')
 
@@ -81,7 +78,7 @@ local log = test:create('log.txt')
 
 ### 3. 重命名子节点
 ```lua
--- 返回新的节点对象
+-- 返回新的节点对象（安卓12可能返回nil）
 dir:rename('old', 'new')
 ```
 
@@ -132,7 +129,6 @@ dir:lastModified('demo.avi')
 
 ### 10. 文件IO服务
 > 提示：文件操作会自动调用该方法
-
 
 ```lua
 --- 可读
