@@ -354,8 +354,8 @@ function _N:read(n)
     else
         local new = self.pos + n
         local size = self:length()
-        if new > size then
-            n = size - self.pos
+        if new > size + 1 then
+            n = size - self.pos + 1
         end
     end
     if n <= 0 then return "" end
@@ -375,8 +375,8 @@ function _N:readString(n)
     else
         local new = self.pos + n
         local size = self:length()
-        if new > size then
-            n = size - self.pos
+        if new > size + 1 then
+            n = size - self.pos + 1
         end
     end
     if n <= 0 then return "" end
@@ -392,7 +392,7 @@ end
 ---@return number 读取长度
 function _N:readBytes(b)
     self:IO(1)
-    self.fic.position(self.pos)
+    self.fic.position(self.pos - 1)
     local buff = ByteBuffer.wrap(b)
     local n = self.fic.read(buff)
     self.pos = self.pos + n

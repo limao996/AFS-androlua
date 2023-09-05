@@ -12,6 +12,8 @@
 [![Telegram Group](https://img.shields.io/badge/Telegram_Group-limao__lua-0099FF?logo=telegram)](https://t.me/limao_lua)
 
 ## 更新内容
+- **`2.0.3`**（2023-09-05)
+    + 修复读取内容乱码的Bug
 - **`2.0.2`**（2023-09-04)
     + 修复 `writeBytes` 方法的异常
 - **`2.0.1`**（2023-08-31)
