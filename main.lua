@@ -1,7 +1,11 @@
 ---
---- Open source: AFS-androlua(https://github.com/limao996/afs-androlua)
+--- Project Name: AFS-androlua
 --- Created by 狸猫呐.
 --- DateTime: 2023/8/30 13:00
+---
+--- Open Source:
+--- [Gitee](https://gitee.com/limao996/afs-androlua)
+--- [Github](https://github.com/limao996/afs-androlua)
 ---
 
 require "import"
@@ -10,7 +14,21 @@ import "android.os.*"
 import "android.widget.*"
 import "android.view.*"
 
-activity.setContentView("layout")
+activity.setContentView {
+    LinearLayout,
+    orientation = "vertical",
+    gravity = "center",
+    {
+        Button,
+        text = "授权",
+        id = "btn1",
+    },
+    {
+        Button,
+        text = "测试",
+        id = "btn2",
+    },
+}
 
 
 -- 导入模块

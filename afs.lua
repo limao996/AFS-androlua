@@ -1,16 +1,23 @@
 ---
---- Open source: AFS-androlua(https://github.com/limao996/afs-androlua)
+--- Project Name: AFS-androlua
 --- Created by 狸猫呐.
 --- DateTime: 2023/8/30 13:00
 ---
+--- Open Source:
+--- [Gitee](https://gitee.com/limao996/afs-androlua)
+--- [Github](https://github.com/limao996/afs-androlua)
+---
+
+local _G, setmetatable, pcall, byte, getmetatable = _G, setmetatable, pcall, byte, getmetatable
+local bindClass, random, astable, clear = luajava.bindClass, math.random, luajava.astable, luajava.clear
 
 -- 导入java类
-local Build = luajava.bindClass "android.os.Build"
-local Intent = luajava.bindClass "android.content.Intent"
-local Uri = luajava.bindClass 'android.net.Uri'
-local DocumentsContract = luajava.bindClass 'android.provider.DocumentsContract'
-local String = luajava.bindClass "java.lang.String"
-local ByteBuffer = luajava.bindClass "java.nio.ByteBuffer"
+local Build = bindClass "android.os.Build"
+local Intent = bindClass "android.content.Intent"
+local Uri = bindClass 'android.net.Uri'
+local DocumentsContract = bindClass 'android.provider.DocumentsContract'
+local String = bindClass "java.lang.String"
+local ByteBuffer = bindClass "java.nio.ByteBuffer"
 local context = activity or service
 
 --- 内容提供者
@@ -58,9 +65,12 @@ local function makeFileUri(path)
     path =
         path:gsub('^/', '')
         :gsub('/$', '')
+    local package = '%2F' .. path:match('[^/]+')
+    if SDK < 33 then
+        package = ''
+    end
     local uri = rootUri
-        .. '%2F'
-        .. path:match('[^/]+')
+        .. package
         .. '/document/primary%3AAndroid%2Fdata%2F'
         .. path:gsub('/', '%%2F')
     return Uri.parse(uri)
@@ -100,7 +110,7 @@ function _M.request(path, callback)
     intent.putExtra("android.provider.extra.INITIAL_URI",
         DocumentsContract.buildDocumentUriUsingTree(uri, id))
 
-    local tag = math.random(0x1000, 0xffff)
+    local tag = random(0x1000, 0xffff)
     context.startActivityForResult(intent, tag)
     local super = _G.onActivityResult
     function _G.onActivityResult(...)
@@ -144,10 +154,14 @@ function _N:open(path)
 end
 
 --- 创建新节点
----@param path string 路径
----@return AFS.Node|nil 节点对象
+---@param path string|nil 路径
+---@return AFS.Node 节点对象
 function _N:create(path)
-    path = self.path .. '/' .. path
+    if path then
+        path = self.path .. '/' .. path
+    else
+        path = self.path
+    end
     local type, name
     if path:sub(-1) == '/' then
         type = "vnd.android.document/directory"
@@ -165,10 +179,14 @@ function _N:create(path)
 end
 
 --- 删除节点
----@param path string 路径
+---@param path string|nil 路径
 ---@return boolean 删除结果
 function _N:remove(path)
-    path = self.path .. '/' .. path
+    if path then
+        path = self.path .. '/' .. path
+    else
+        path = self.path
+    end
     local err, res = pcall(DocumentsContract.deleteDocument, resolver, makeFileUri(path))
     if err then return res end
     return false
@@ -177,7 +195,7 @@ end
 --- 重命名节点
 ---@param path string 路径
 ---@param name string 新名字
----@return AFS.Node|nil 新对象
+---@return AFS.Node 新对象
 function _N:rename(path, name)
     path = self.path .. '/' .. path
     local err, res = pcall(DocumentsContract.renameDocument, resolver, makeFileUri(path), name)
@@ -189,10 +207,14 @@ function _N:rename(path, name)
 end
 
 --- 节点是否存在
----@param path string 路径
+---@param path string|nil 路径
 ---@return boolean
 function _N:exists(path)
-    path = self.path .. '/' .. path
+    if path then
+        path = self.path .. '/' .. path
+    else
+        path = self.path
+    end
     local a, b = pcall(function()
         local cursor = resolver.query(makeFileUri(path), { "document_id" }, nil, nil, nil)
         local n = cursor.getCount() > 0
@@ -338,7 +360,7 @@ end
 ---@param b userdata 字节数组
 ---@return string 字符串
 local function bytes2string(b)
-    local t = luajava.astable(b)
+    local t = astable(b)
     for i = 1, #t do
         t[i] = t[i] & 0xff
     end
@@ -362,7 +384,7 @@ function _N:read(n)
     local b = byte[n]
     self:readBytes(b)
     local s = bytes2string(b)
-    luajava.clear(b)
+    clear(b)
     return s
 end
 
@@ -383,7 +405,7 @@ function _N:readString(n)
     local b = byte[n]
     self:readBytes(b)
     local s = String(b).toString()
-    luajava.clear(b)
+    clear(b)
     return s
 end
 
@@ -405,7 +427,7 @@ end
 function _N:write(s)
     local b = string2bytes(s)
     self:writeBytes(b)
-    luajava.clear(b)
+    clear(b)
     return self
 end
 
@@ -415,7 +437,7 @@ end
 function _N:writeString(s)
     local b = String(s).getBytes()
     self:writeBytes(b)
-    luajava.clear(b)
+    clear(b)
     return self
 end
 

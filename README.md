@@ -1,17 +1,21 @@
-# AFS
+# AFS - androlua
 
-基于 `AndroLua+` 的 `Android/data` 文件操作模块
+基于 `AndroLua` 的 `Android/data` 文件操作模块
 
-[![license](https://img.shields.io/github/license/limao996/afs-androlua.svg)](LICENSE)
-[![releases](https://img.shields.io/github/v/tag/limao996/afs-androlua?color=C71D23&label=releases&logo=github)](https://github.com/limao996/afs-androlua/releases)
-![](https://img.shields.io/github/last-commit/limao996/afs-androlua.svg)
-[![Github](https://img.shields.io/badge/Github-repository-0969DA?logo=github)](https://github.com/limao996/afs-androlua)
+[![](https://img.shields.io/github/license/limao996/afs-androlua.svg)]()
+[![](https://img.shields.io/github/v/tag/limao996/afs-androlua?color=0969DA&label=发行版&logo=github)](https://github.com/limao996/afs-androlua/releases)
+[![](https://img.shields.io/github/v/tag/limao996/afs-androlua?color=C71D23&label=发行版&logo=gitee)](https://gitee.com/limao996/afs-androlua/releases)
 
-[![QQ](https://img.shields.io/badge/QQ-762259384-0099FF?logo=tencentqq)](https://qm.qq.com/cgi-bin/qm/qr?k=cXJY7qL3Vm3OKtk8_PjJdgnHqoS_sfGL&noverify=0&personal_qrcode_source=3)
-[![QQ Group](https://img.shields.io/badge/QQ_Group-884183161-0099FF?logo=tencentqq)](https://qm.qq.com/q/3aHOYecyNO)
-[![Telegram Group](https://img.shields.io/badge/Telegram_Group-limao__lua-0099FF?logo=telegram)](https://t.me/limao_lua)
+[![](https://img.shields.io/badge/Github-仓库-0969DA?logo=github)](https://github.com/limao996/afs-androlua)
+[![](https://img.shields.io/badge/Gitee-仓库-C71D23?logo=gitee)](https://gitee.com/limao996/afs-androlua)
+[![](https://img.shields.io/badge/QQ-762259384-0099FF?logo=tencentqq)](https://qm.qq.com/cgi-bin/qm/qr?k=cXJY7qL3Vm3OKtk8_PjJdgnHqoS_sfGL&noverify=0&personal_qrcode_source=3)
+
+[![](https://img.shields.io/badge/QQ群-884183161-0099FF?logo=tencentqq)](https://qm.qq.com/q/3aHOYecyNO)
+[![](https://img.shields.io/badge/Telegram-limao__lua-0099FF?logo=telegram)](https://t.me/limao_lua)
 
 ## 更新内容
+- **`2.0.4`**（2023-11-11)
+    + 修复 `Android 11` 兼容性问题
 - **`2.0.3`**（2023-09-05)
     + 修复读取内容乱码的Bug
 - **`2.0.2`**（2023-09-04)
@@ -23,7 +27,7 @@
     + 重构项目
 
 ## AFS 主类
-> 负责提供权限管理与节点实例化服务
+> 权限申请与实例化
 
 ### 1. 导入模块
 ```lua
@@ -60,52 +64,67 @@ local dir = afs.open('package/path/path')
 
 
 ## AFS.Node 节点
-> 负责提供操作节点的方法
+> 节点操作与IO
 
-### 1. 打开子节点
+### 1. 打开节点
 ```lua
 -- 返回节点对象
-local node = dir:open('path/file.ext')
+local file = dir:open('path/file.txt')
 ```
 
-### 2. 创建子节点
+### 2. 创建节点
 ```lua
--- 返回新的节点对象（安卓12可能返回nil）
+-- 创建节点并返回对象
+
 -- 创建文件夹节点
-local test = dir:create('test/')
+local images = dir:create('images/')
 
 -- 创建文件节点
-local log = test:create('log.txt')
+local log = images:create('log.txt')
+
+-- 使用当前节点创建新文件
+local new = dir:open('new.txt')
+new:create()
 ```
 
 ### 3. 重命名子节点
 ```lua
--- 返回新的节点对象（安卓12可能返回nil）
+-- 返回新的节点对象
 dir:rename('old', 'new')
 ```
 
 ### 4. 节点类型
 ```lua
--- 是否为文件节点
+-- 当前节点是否为文件
 dir:isFile()
 
 -- 子节点是否为文件
 dir:isFile('demo.avi')
 ```
 
-### 5. 删除子节点
+### 5. 删除节点
 ```lua
--- 返回布尔值
+-- 删除节点并返回结果
+
+-- 删除当前节点
+file:remove()
+
+-- 删除子节点
 dir:remove('demo.avi')
 ```
 
-### 6. 子节点是否存在
+### 6. 节点是否存在
 ```lua
--- 返回布尔值
+-- 判断节点是否存在并返回结果
+
+-- 当前节点是否存在
+file:exists()
+
+-- 子节点是否存在
 dir:exists('demo.avi')
 ```
 
-### 7. 子节点列表
+### 7. 节点列表
 ```lua
 -- 返回列表
 dir:list()
@@ -114,7 +133,7 @@ dir:list()
 ### 8. 文件大小
 ```lua
 -- 文件大小
-node:length()
+file:length()
 
 -- 文件子节点大小
 dir:length('demo.avi')
@@ -123,7 +142,7 @@ dir:length('demo.avi')
 ### 9. 节点修改时间
 ```lua
 -- 修改时间
-node:lastModified()
+file:lastModified()
 
 -- 子节点修改时间
 dir:lastModified('demo.avi')
@@ -134,13 +153,13 @@ dir:lastModified('demo.avi')
 
 ```lua
 --- 可读
-node:IO(afs.READ)
+file:IO(afs.READ)
 
 --- 可写
-node:IO(afs.WRITE)
+file:IO(afs.WRITE)
 
 --- 可读写
-node:IO(afs.READ | afs.WRITE)
+file:IO(afs.READ | afs.WRITE)
 ```
 
 > 节点根据读写权限将会拥有以下对应成员
@@ -167,56 +186,62 @@ output:close()
 ### 12. 读取数据
 ```lua
 -- 读取全部
-node:read()
+file:read()
 
 -- 读取6字节（效率低）
-node:read(6)
+file:read(6)
 
 -- 读取6字节（仅文本）
-node:readString(6)
+file:readString(6)
 
 -- 读取到字节数组
 local bytes = byte[4096]
-node:readBytes(bytes)
+file:readBytes(bytes)
 ```
 
 ### 13. 写入数据
 ```lua
 -- 写入字符串(效率低)
-node:write('测试')
+file:write('测试')
 
 -- 写入字符串(仅文本)
-node:writeString('文本')
+file:wrifilering('文本')
 
 -- 写入字节数组
 local bytes = byte[4096]
-node:writeBytes(bytes)
+file:writeBytes(bytes)
 ```
 
 ### 14. 跳转文件位置
 > 提示：返回跳转后位置
 ```lua
 -- 不跳转，仅返回位置
-node:seek()
+file:seek()
 
 -- 从头部开始
-node:seek('set', 1)
+file:seek('set', 1)
 
 -- 从当前位置开始
-node:seek('cur', 0)
+file:seek('cur', 0)
 
 -- 从尾部开始
-node:seek('end', -1)
+file:seek('end', -1)
 ```
 
-### 13. 写入文件缓冲
+### 15. 写入文件缓冲
 ```lua
 -- 写入缓冲到磁盘
-node:flush()
+file:flush()
 ```
 
-### 14. 关闭文件IO服务
+### 16. 截断文件内容
+```lua
+-- 截断到位置 0
+file:truncate(0)
+```
+
+### 17. 关闭文件IO服务
 ```lua
 -- 关闭节点IO
-node:close()
+file:close()
 ```
